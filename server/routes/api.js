@@ -11,13 +11,13 @@ const Expense = require('../model/Expense')
 //      data.save()
 // });
 
-router.get('/expenses', function (req, res) {
-    Expense.find({}).sort({
-        date: 1//s8er ll kber // date: -1 lkber ll s8er
-    }).then(function (expenses) {
-        res.send(expenses)
-    })
-})
+// router.get('/expenses', function (req, res) {
+//     Expense.find({}).sort({
+//         date: 1//s8er ll kber // date: -1 lkber ll s8er
+//     }).then(function (expenses) {
+//         res.send(expenses)
+//     })
+// })
 router.post('/expense', function (req, res) {
     const item = req.body.item
     const amount = req.body.amount
@@ -46,8 +46,8 @@ router.put('/update/:group1/:group2', function (req, res) {
 router.get('/expenses/:group', function (req, res) {
     const group = req.params.group
     const total = req.query.total
-    console.log(typeof total)
-    if (total=="true") {
+    
+    if (total == "true") {
         Expense.aggregate([
             {
                 $match: { group: group }
@@ -55,7 +55,7 @@ router.get('/expenses/:group', function (req, res) {
             {
                 $group:
                 {
-                    _id:{group:"$group"},
+                    _id: { group: "$group", item:"$item" },
                     totalamount: { $sum: "$amount" },
                     countamount: { $sum: 1 }
                 }
@@ -63,19 +63,32 @@ router.get('/expenses/:group', function (req, res) {
         ]).then(results => {
             res.send(results)
         })
-    }else{
+    } else {
         Expense.find({ group: group }).then(function (expenses) {
             res.send(expenses)
         })
     }
 })
-// router.delete('/apocalypse',function(req,res){
 
-//     Person.deleteMany().then(function(){
+router.get('/expenses', function (req, res) {
+    const d1 = req.query.d1
+    const d2 = req.query.d2 || moment().format()
+    if (!d1 && d2) {
+        Expense.find({}).sort({
+            date: 1//s8er ll kber // date: -1 lkber ll s8er
+        }).then(function (expenses) {
+            res.send(expenses)
+        })
+    } else {
+        Expense.find({
+            $and: [{
+                date: { $gte: d1, $lte: d2 }
+            }]
+        }).then(result => {
 
-//         res.send("all the data is deleted")
-//     })
+            res.send(result)
+        })
+    }
+})
 
-
-// })
 module.exports = router
