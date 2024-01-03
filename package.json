@@ -1,0 +1,21 @@
+{
+  "name": "intitfullstackproject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "fs": "^0.0.1-security",
+    "moment": "^2.30.1",
+    "mongoose": "^8.0.3",
+    "nodemon": "^3.0.2",
+    "query": "^0.2.0"
+  }
+}
